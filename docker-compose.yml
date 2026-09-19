@@ -1,39 +1,48 @@
-version: '3.8'
+version: "3.9"
 
 services:
-  postgres:
-    image: postgres:15-alpine
+  api:
+    build: .
+    container_name: margdarshak_api
+    ports:
+      - "8000:8000"
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-margdarshak}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-margdarshak_secret}
-      POSTGRES_DB: ${POSTGRES_DB:-margdarshak_db}
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: always
-
-  qdrant:
-    image: qdrant/qdrant:latest
-    ports:
-      - "6333:6333"
-      - "6334:6334"
-    volumes:
-      - qdrant_data:/qdrant/storage
-    restart: always
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=margdarshak_secret
+      # Note: OPENAI_API_KEY must be provided via .env file or host environment
+    env_file:
+      - .env
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    networks:
+      - margdarshak_network
 
   neo4j:
-    image: neo4j:5.12.0
-    environment:
-      NEO4J_AUTH: ${NEO4J_USER:-neo4j}/${NEO4J_PASSWORD:-margdarshak_secret}
+    image: neo4j:5.14.1
+    container_name: margdarshak_neo4j
     ports:
-      - "7474:7474"
-      - "7687:7687"
+      - "7474:7474" # HTTP UI
+      - "7687:7687" # Bolt protocol
+    environment:
+      - NEO4J_AUTH=neo4j/margdarshak_secret
+      - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_import_file_use__neo4j__config=true
     volumes:
       - neo4j_data:/data
-    restart: always
+    networks:
+      - margdarshak_network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider localhost:7474 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
-  postgres_data:
-  qdrant_data:
   neo4j_data:
+
+networks:
+  margdarshak_network:
+    driver: bridge
