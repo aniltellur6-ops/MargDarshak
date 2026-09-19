@@ -1,0 +1,17 @@
+# FastAPI & Web Layer
+fastapi==0.104.1
+uvicorn==0.24.0.post1
+pydantic==2.5.2
+pydantic-settings==2.1.0
+
+# Graph Database
+neo4j==5.14.1
+
+# AI Agents & LangGraph
+langchain==0.1.0
+langchain-openai==0.0.2
+langgraph==0.0.10
+openai==1.6.0
+
+# Environment Management
+python-dotenv==1.0.0

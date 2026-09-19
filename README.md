@@ -1,33 +1,60 @@
-# MargDarshak: Career Intelligence & Skill-Gap Agent
+# 🧭 MargDarshak Intelligence Backend
 
-An agentic career platform that converts a student's current profile and career goal into an evidence-based, continuously updated path toward relevant employment opportunities.
+MargDarshak is an agentic career platform that converts a student's current profile and career goal into an evidence-based, continuously updated path toward relevant employment opportunities.
 
-## Core Principle
-`Job → Gap → Skill → Course → Project → Opportunity`
+It uses an advanced **LangGraph-driven Orchestrator**, powered by OpenAI structured extraction and a persistent **Neo4j Canonical Skill Graph**, to identify precisely what skills a student possesses, what a job requires, and how to bridge the gap with prioritized courses and projects.
 
-## Overview
-MargDarshak uses a continuously re-evaluating, evidence-backed career agent to connect a student's current capabilities to specific job opportunities. It identifies the highest-impact skill gaps, recommends practical learning and project paths, and updates the plan as the student's capabilities and the market change.
+## 🏗️ Architecture
 
-## Architecture
-- **Frontend**: Next.js, React, Tailwind CSS, TypeScript
-- **Backend**: Python, FastAPI
-- **Agent Orchestration**: LangGraph, LangChain
-- **Semantic Matching**: Sentence Transformers
-- **Vector Search**: Qdrant / pgvector
-- **Database**: PostgreSQL
-- **Skill Graph**: Neo4j / PostgreSQL
-- **MCP Layer**: Model Context Protocol (MCP) for tools integration
+The backend consists of 14+ highly intelligent micro-agents, orchestrated into a unified LangGraph state machine:
 
-## Key Features
-1. Profile Intelligence
-2. Job Intelligence
-3. Skill Ontology
-4. Job Matching
-5. Gap Analysis
-6. Gap Prioritization
-7. Course Intelligence
-8. Project Intelligence
-9. Career Trend Intelligence
-10. Professional Benchmarking
-11. Continuous Re-evaluation
-12. MCP Tool Layer
+1. **Profile Intelligence**: Extracts structured skills and evidence from messy resumes.
+2. **Skill Ontology (Neo4j)**: Canonicalizes raw skill names into a strict Neo4j Graph hierarchy.
+3. **Job Intelligence**: Analyzes job descriptions for required skills.
+4. **Matching Engine**: Computes exact overlap between a Profile and a Job.
+5. **Gap Analysis**: Determines exactly which skills the student is missing.
+6. **Gap Prioritization**: Ranks missing skills based on Neo4j dependencies (e.g., learn Python before K8s).
+7. **Opportunity Engine**: Matches student to new jobs automatically.
+8. **Course & Project Intelligence**: Recommends ways to fill the gaps.
+9. **Assessment & Progress Engines**: Generates quizzes and updates skill proficiencies dynamically.
+10. **News Intelligence**: Analyzes market trends and updates the Neo4j Skill Graph dynamically!
+11. **Agent Orchestrator (LangGraph)**: Strings all the above together automatically.
+12. **Graph Memory**: Persists Students and Jobs into Neo4j.
+13. **System Orchestrator**: Hardened REST API serving all intelligence layer endpoints.
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+- Python 3.9+
+- Neo4j Desktop or Neo4j Aura DB
+
+### 2. Installation
+
+Clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/aniltellur6-ops/MargDarshak.git
+cd MargDarshak
+pip install -r requirements.txt
+```
+
+### 3. Environment Setup
+
+Copy the example environment file and insert your keys:
+
+```bash
+cp .env.example .env
+```
+
+Ensure `.env` contains valid keys for OpenAI and Neo4j.
+
+### 4. Running the Server
+
+Start the unified FastAPI system orchestrator:
+
+```bash
+cd backend
+uvicorn app.main:app --reload
+```
+
+The Swagger UI documentation will be available at: `http://127.0.0.1:8000/docs`
