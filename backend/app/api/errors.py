@@ -1,13 +1,18 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
+import logging
 
-class MargDarshakException(Exception):
-    def __init__(self, message: str, status_code: int = 400):
-        self.message = message
-        self.status_code = status_code
+logger = logging.getLogger(__name__)
 
-async def margdarshak_exception_handler(request: Request, exc: MargDarshakException):
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Global Exception on {request.method} {request.url}: {exc}", exc_info=True)
     return JSONResponse(
-        status_code=exc.status_code,
-        content={"message": exc.message, "error": True},
+        status_code=500,
+        content={
+            "error": {
+                "code": 500,
+                "message": "Internal Server Error",
+                "details": str(exc)
+            }
+        }
     )

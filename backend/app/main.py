@@ -1,13 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.config.settings import get_settings
-from app.config.logging import setup_logging
-from app.api.errors import MargDarshakException, margdarshak_exception_handler
-from app.api.health import router as health_router
+from dotenv import load_dotenv
+
+# Import Error Handlers
+from app.api.errors import global_exception_handler
+
+# Import Routers
 from app.api.profile import router as profile_router
-from app.api.ontology import router as ontology_router
 from app.api.job import router as job_router
-from app.api.matching import router as matching_router
+from app.api.match import router as match_router
 from app.api.gap import router as gap_router
 from app.api.priority import router as priority_router
 from app.api.opportunity import router as opportunity_router
@@ -18,32 +19,35 @@ from app.api.progress import router as progress_router
 from app.api.news import router as news_router
 from app.api.orchestrator import router as orchestrator_router
 
-settings = get_settings()
-logger = setup_logging()
+load_dotenv()
 
 app = FastAPI(
-    title=settings.PROJECT_NAME,
-    version=settings.VERSION,
+    title="MargDarshak API",
+    description="Core Intelligence API for the MargDarshak Career & Skill-Gap Platform.",
+    version="1.0.0",
 )
 
-# CORS
+# CORS Middleware Configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Allows all origins in development
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
 )
 
-# Exception handlers
-app.add_exception_handler(MargDarshakException, margdarshak_exception_handler)
+# Register Global Exception Handlers
+app.add_exception_handler(Exception, global_exception_handler)
 
-# Routers
-app.include_router(health_router, prefix="/api")
+# Health Check Route
+@app.get("/health", tags=["system"])
+async def health_check():
+    return {"status": "healthy", "version": app.version}
+
+# Include all Feature Routers
 app.include_router(profile_router, prefix="/api/profile", tags=["profile"])
-app.include_router(ontology_router, prefix="/api/ontology", tags=["ontology"])
 app.include_router(job_router, prefix="/api/job", tags=["job"])
-app.include_router(matching_router, prefix="/api/match", tags=["matching"])
+app.include_router(match_router, prefix="/api/match", tags=["match"])
 app.include_router(gap_router, prefix="/api/gap", tags=["gap"])
 app.include_router(priority_router, prefix="/api/priority", tags=["priority"])
 app.include_router(opportunity_router, prefix="/api/opportunity", tags=["opportunity"])
@@ -53,24 +57,3 @@ app.include_router(assessment_router, prefix="/api/assessment", tags=["assessmen
 app.include_router(progress_router, prefix="/api/progress", tags=["progress"])
 app.include_router(news_router, prefix="/api/news", tags=["news"])
 app.include_router(orchestrator_router, prefix="/api/orchestrator", tags=["orchestrator"])
-
-@app.on_event("startup")
-async def startup_event():
-    logger.info("Starting MargDarshak API...")
-
-@app.get("/")
-async def root():
-    return {"message": "Welcome to MargDarshak API"}
-
-
-
-
-
-
-
-
-
-
-
-
-
