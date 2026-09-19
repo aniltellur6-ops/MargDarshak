@@ -59,3 +59,12 @@ uvicorn app.main:app --reload
 
 The Swagger UI documentation will be available at: `http://127.0.0.1:8000/docs`
 
+## 🤖 MCP Server Integration
+
+MargDarshak includes a native Model Context Protocol (MCP) server. You can connect Claude Desktop or Cursor to it, allowing the AI to run career gap analyses and query the skill graph directly!
+
+To run the MCP Server:
+```bash
+python backend/app/mcp_server.py
+```
+
