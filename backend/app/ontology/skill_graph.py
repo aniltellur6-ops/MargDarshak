@@ -67,7 +67,35 @@ class SkillGraphManager:
                 return record["skill_id"]
         return None
 
+
+    def calculate_similarity(self, skill_a_id: str, skill_b_id: str) -> float:
+        if not skill_a_id or not skill_b_id:
+            return 0.0
+            
+        skill_a = skill_a_id.upper()
+        skill_b = skill_b_id.upper()
+        
+        if skill_a == skill_b:
+            return 1.0
+            
+        query = (
+            "MATCH (a:Skill {skill_id: }), (b:Skill {skill_id: }) "
+            "OPTIONAL MATCH (a)-[p:PARENT_OF]-(b) "
+            "OPTIONAL MATCH (a)-[r:RELATED_TO|REQUIRES]-(b) "
+            "RETURN p, r"
+        )
+        with self.driver.session() as session:
+            result = session.run(query, skill_a=skill_a, skill_b=skill_b)
+            record = result.single()
+            if record:
+                if record["p"] is not None:
+                    return 0.8
+                if record["r"] is not None:
+                    return 0.5
+        return 0.0
+
     def clear_database(self):
         query = "MATCH (n) DETACH DELETE n"
         with self.driver.session() as session:
             session.run(query)
+

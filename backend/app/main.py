@@ -7,6 +7,7 @@ from app.api.health import router as health_router
 from app.api.profile import router as profile_router
 from app.api.ontology import router as ontology_router
 from app.api.job import router as job_router
+from app.api.matching import router as matching_router
 
 settings = get_settings()
 logger = setup_logging()
@@ -33,6 +34,7 @@ app.include_router(health_router, prefix="/api")
 app.include_router(profile_router, prefix="/api/profile", tags=["profile"])
 app.include_router(ontology_router, prefix="/api/ontology", tags=["ontology"])
 app.include_router(job_router, prefix="/api/job", tags=["job"])
+app.include_router(matching_router, prefix="/api/match", tags=["matching"])
 
 @app.on_event("startup")
 async def startup_event():
@@ -41,6 +43,7 @@ async def startup_event():
 @app.get("/")
 async def root():
     return {"message": "Welcome to MargDarshak API"}
+
 
 
 
