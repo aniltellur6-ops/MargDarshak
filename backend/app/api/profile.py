@@ -34,3 +34,4 @@ async def extract_profile_endpoint(
         return profile
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Extraction failed: {str(e)}")
+

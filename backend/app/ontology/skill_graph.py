@@ -9,6 +9,69 @@ class SkillGraphManager:
         password = password or os.getenv("NEO4J_PASSWORD", "margdarshak_secret")
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
 
+    def save_profile(self, profile_id: str, profile):
+        # We assume profile is a ProfileExtractionResult
+        with self.driver.session() as session:
+            # 1. Create/Merge Student node
+            query = """
+            MERGE (s:Student {id: $profile_id})
+            SET s.first_name = $first_name,
+                s.last_name = $last_name,
+                s.current_role = $current_role
+            """
+            session.run(query, 
+                profile_id=profile_id,
+                first_name=profile.first_name,
+                last_name=profile.last_name,
+                current_role=profile.current_role
+            )
+            
+            # 2. Clear old HAS_SKILL relationships for this student (optional, but good for fresh state)
+            session.run("MATCH (s:Student {id: $profile_id})-[r:HAS_SKILL]->() DELETE r", profile_id=profile_id)
+            
+            # 3. Create HAS_SKILL relationships
+            for evidence in profile.evidences:
+                rel_query = """
+                MATCH (s:Student {id: $profile_id})
+                MATCH (sk:Skill {skill_id: $skill_id})
+                MERGE (s)-[r:HAS_SKILL]->(sk)
+                SET r.proficiency = $proficiency,
+                    r.context = $context
+                """
+                session.run(rel_query, 
+                    profile_id=profile_id,
+                    skill_id=evidence.skill_name,
+                    proficiency=evidence.proficiency,
+                    context=evidence.context
+                )
+
+    def save_job(self, job):
+        # We assume job is a JobCreate
+        with self.driver.session() as session:
+            # 1. Create/Merge Job node
+            query = """
+            MERGE (j:Job {id: $job_id})
+            SET j.title = $title,
+                j.company = $company
+            """
+            session.run(query,
+                job_id=job.job_id,
+                title=job.title,
+                company=job.company
+            )
+            
+            # 2. Create REQUIRES_SKILL relationships
+            for skill_id in job.skills_required:
+                rel_query = """
+                MATCH (j:Job {id: $job_id})
+                MATCH (sk:Skill {skill_id: $skill_id})
+                MERGE (j)-[r:REQUIRES_SKILL]->(sk)
+                """
+                session.run(rel_query,
+                    job_id=job.job_id,
+                    skill_id=skill_id
+                )
+
     def close(self):
         self.driver.close()
 
