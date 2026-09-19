@@ -1,0 +1,17 @@
+{
+  "Java": "JAVA",
+  "java": "JAVA",
+  "Core Java": "JAVA",
+  "Springboot": "SPRING_BOOT",
+  "Spring Boot": "SPRING_BOOT",
+  "spring-boot": "SPRING_BOOT",
+  "React.js": "REACT",
+  "ReactJS": "REACT",
+  "react": "REACT",
+  "sql": "SQL",
+  "MySQL": "SQL",
+  "PostgreSQL": "SQL",
+  "docker": "DOCKER",
+  "rest": "REST_API",
+  "REST": "REST_API"
+}

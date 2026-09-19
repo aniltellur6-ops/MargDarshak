@@ -1,0 +1,17 @@
+[
+  {
+    "source": "SPRING_BOOT",
+    "target": "JAVA",
+    "type": "REQUIRES"
+  },
+  {
+    "source": "SPRING_BOOT",
+    "target": "REST_API",
+    "type": "RELATED_TO"
+  },
+  {
+    "source": "DOCKER",
+    "target": "BACKEND_DEVELOPMENT",
+    "type": "RELATED_TO"
+  }
+]

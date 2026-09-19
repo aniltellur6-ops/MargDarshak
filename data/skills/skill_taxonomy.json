@@ -1,0 +1,42 @@
+[
+  {
+    "skill_id": "BACKEND_DEVELOPMENT",
+    "name": "Backend Development",
+    "category": "Domain"
+  },
+  {
+    "skill_id": "JAVA",
+    "name": "Java",
+    "category": "Language",
+    "parent": "BACKEND_DEVELOPMENT"
+  },
+  {
+    "skill_id": "SPRING_BOOT",
+    "name": "Spring Boot",
+    "category": "Framework",
+    "parent": "JAVA"
+  },
+  {
+    "skill_id": "REST_API",
+    "name": "REST API",
+    "category": "Concept",
+    "parent": "SPRING_BOOT"
+  },
+  {
+    "skill_id": "SQL",
+    "name": "SQL",
+    "category": "Language",
+    "parent": "BACKEND_DEVELOPMENT"
+  },
+  {
+    "skill_id": "DOCKER",
+    "name": "Docker",
+    "category": "Tool",
+    "parent": "BACKEND_DEVELOPMENT"
+  },
+  {
+    "skill_id": "REACT",
+    "name": "React",
+    "category": "Framework"
+  }
+]
