@@ -1,0 +1,25 @@
+# Node
+node_modules/
+dist/
+.next/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+.venv/
+.pytest_cache/
+.coverage
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data
+data/jobs/raw/*
+data/courses/raw/*
+!data/jobs/raw/.gitkeep
+!data/courses/raw/.gitkeep
