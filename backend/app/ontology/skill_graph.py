@@ -94,8 +94,26 @@ class SkillGraphManager:
                     return 0.5
         return 0.0
 
+
+    def get_skill_dependency_weight(self, skill_id: str) -> int:
+        if not skill_id:
+            return 0
+            
+        # Count how many other skills have a REQUIRES or PARENT_OF pointing to this skill
+        query = (
+            "MATCH (other:Skill)-[:REQUIRES|PARENT_OF]->(target:Skill {skill_id: }) "
+            "RETURN count(other) AS dep_count"
+        )
+        with self.driver.session() as session:
+            result = session.run(query, skill_id=skill_id.upper())
+            record = result.single()
+            if record:
+                return record["dep_count"]
+        return 0
+
     def clear_database(self):
         query = "MATCH (n) DETACH DELETE n"
         with self.driver.session() as session:
             session.run(query)
+
 
