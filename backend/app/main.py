@@ -12,6 +12,7 @@ from app.api.gap import router as gap_router
 from app.api.priority import router as priority_router
 from app.api.opportunity import router as opportunity_router
 from app.api.course import router as course_router
+from app.api.project import router as project_router
 
 settings = get_settings()
 logger = setup_logging()
@@ -43,6 +44,7 @@ app.include_router(gap_router, prefix="/api/gap", tags=["gap"])
 app.include_router(priority_router, prefix="/api/priority", tags=["priority"])
 app.include_router(opportunity_router, prefix="/api/opportunity", tags=["opportunity"])
 app.include_router(course_router, prefix="/api/course", tags=["course"])
+app.include_router(project_router, prefix="/api/project", tags=["project"])
 
 @app.on_event("startup")
 async def startup_event():
@@ -51,6 +53,7 @@ async def startup_event():
 @app.get("/")
 async def root():
     return {"message": "Welcome to MargDarshak API"}
+
 
 
 
