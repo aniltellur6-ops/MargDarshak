@@ -15,3 +15,11 @@ class Progress(ProgressBase):
     id: int
     class Config:
         from_attributes = True
+
+from .profile import ProfileExtractionResult
+from .matching import MatchResult
+
+class ProgressUpdateReport(BaseModel):
+    updated_profile: ProfileExtractionResult
+    was_skill_added: bool
+    new_match_result: Optional[MatchResult] = None

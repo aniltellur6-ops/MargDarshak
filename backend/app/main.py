@@ -14,6 +14,7 @@ from app.api.opportunity import router as opportunity_router
 from app.api.course import router as course_router
 from app.api.project import router as project_router
 from app.api.assessment import router as assessment_router
+from app.api.progress import router as progress_router
 
 settings = get_settings()
 logger = setup_logging()
@@ -47,6 +48,7 @@ app.include_router(opportunity_router, prefix="/api/opportunity", tags=["opportu
 app.include_router(course_router, prefix="/api/course", tags=["course"])
 app.include_router(project_router, prefix="/api/project", tags=["project"])
 app.include_router(assessment_router, prefix="/api/assessment", tags=["assessment"])
+app.include_router(progress_router, prefix="/api/progress", tags=["progress"])
 
 @app.on_event("startup")
 async def startup_event():
@@ -55,6 +57,7 @@ async def startup_event():
 @app.get("/")
 async def root():
     return {"message": "Welcome to MargDarshak API"}
+
 
 
 
