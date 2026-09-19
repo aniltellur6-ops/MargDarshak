@@ -13,3 +13,5 @@ sqlalchemy==2.0.31
 python-dotenv==1.0.1
 mcp==1.0.0
 pytest==8.2.2
+asyncpg==0.29.0
+greenlet==3.0.3
