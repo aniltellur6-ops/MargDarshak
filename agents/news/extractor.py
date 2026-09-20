@@ -7,7 +7,7 @@ from app.schemas.news import NewsSignalCreate
 from app.ontology.skill_graph import SkillGraphManager
 
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from pydantic import BaseModel, Field
 from typing import List
 
@@ -18,7 +18,7 @@ class NewsExtractionSchema(BaseModel):
     raw_skills: List[str] = Field(description="List of raw technical skills, tools, or concepts explicitly impacted by this news")
 
 def extract_news_signal(raw_text: str) -> NewsSignalCreate:
-    llm = ChatOpenAI(model="gpt-4o", temperature=0)
+    llm = ChatGoogleGenerativeAI(model="gemini-3.6-flash", temperature=0)
     structured_llm = llm.with_structured_output(NewsExtractionSchema)
     
     prompt = ChatPromptTemplate.from_messages([

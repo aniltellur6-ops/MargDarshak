@@ -3,7 +3,7 @@ import os
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../../'))
 from agents.job.extractor import extract_job, JobExtractionResult
-from app.schemas.job import JobCreate, JobRequirementCreate
+from app.schemas.job import JobCreate, JobRequirement
 from app.ontology.skill_graph import SkillGraphManager
 import uuid
 
@@ -23,10 +23,9 @@ def parse_and_normalize_job(raw_text: str) -> JobCreate:
             # If we don't find it in ontology, we just use the raw name in uppercase as a fallback
             skill_id_to_use = canonical_id if canonical_id else raw_skill.upper().replace(' ', '_')
             
-            req = JobRequirementCreate(
-                skill_id=skill_id_to_use,
-                importance_score=weight,
-                is_mandatory=(weight == 1.0)
+            req = JobRequirement(
+                skill_name=skill_id_to_use,
+                is_required=(weight == 1.0)
             )
             requirements.append(req)
             
@@ -44,10 +43,9 @@ def parse_and_normalize_job(raw_text: str) -> JobCreate:
     
     job = JobCreate(
         job_id=job_id,
-        title=extracted.title,
+        role=extracted.title,
         company=extracted.company,
         location=extracted.location or "Remote",
-        description=extracted.description,
         requirements=requirements
     )
     

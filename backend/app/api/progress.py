@@ -6,7 +6,8 @@ import os
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../../'))
 from agents.progress.tracker import update_progress
-from app.schemas.profile import ProfileExtractionResult, SkillEvidence
+from app.schemas.profile import SkillEvidence
+from agents.profile.extractor import ProfileExtractionResult
 from app.schemas.job import JobCreate
 from app.schemas.progress import ProgressUpdateReport
 

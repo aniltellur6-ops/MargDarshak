@@ -3,7 +3,8 @@ import sys
 from typing import Optional
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../backend'))
-from app.schemas.profile import ProfileExtractionResult, SkillEvidence
+from app.schemas.profile import SkillEvidence
+from agents.profile.extractor import ProfileExtractionResult
 from app.schemas.job import JobCreate
 from app.schemas.progress import ProgressUpdateReport
 from app.engine.matching import match_profile_to_job

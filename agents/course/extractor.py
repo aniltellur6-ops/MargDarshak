@@ -6,7 +6,7 @@ from app.schemas.course import CourseCreate
 from app.ontology.skill_graph import SkillGraphManager
 
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from pydantic import BaseModel, Field
 from typing import List
 import uuid
@@ -18,7 +18,7 @@ class CourseExtractionSchema(BaseModel):
     raw_skills: List[str] = Field(description="List of skills, tools, or concepts taught in this course")
 
 def extract_course(raw_text: str) -> CourseCreate:
-    llm = ChatOpenAI(model="gpt-4o", temperature=0)
+    llm = ChatGoogleGenerativeAI(model="gemini-3.6-flash", temperature=0)
     structured_llm = llm.with_structured_output(CourseExtractionSchema)
     
     prompt = ChatPromptTemplate.from_messages([

@@ -8,11 +8,11 @@ from agents.news.extractor import extract_news_signal
 load_dotenv()
 
 def run_test():
-    raw_news_text = \"\"\"
+    raw_news_text = """
     Major enterprise AcmeCorp announced today that they are abandoning their legacy PHP monolith 
     and rewriting their entire backend using Go (Golang) for better concurrency and performance.
     They also plan to migrate their databases to Postgres.
-    \"\"\"
+    """
     
     print("Running News Intelligence Extraction...")
     signal = extract_news_signal(raw_news_text)

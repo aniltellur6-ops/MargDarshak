@@ -8,7 +8,7 @@ from agents.profile.extractor import extract_profile
 
 load_dotenv()
 
-dummy_resume = \"\"\"
+dummy_resume = """
 John Doe
 Location: Pune, India
 Education: B.Tech in Information Technology, XYZ College (2020-2024)
@@ -25,7 +25,7 @@ Experience / Projects:
 Built a full-stack web application using Java, Spring Boot, and SQL. Deployed on AWS.
 2. Academic Portal
 Created a student portal frontend using React.
-\"\"\"
+"""
 
 def run_test():
     if not os.getenv("OPENAI_API_KEY"):

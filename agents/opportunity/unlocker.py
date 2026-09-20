@@ -11,7 +11,7 @@ from app.schemas.opportunity import OpportunityUnlockReport
 from app.engine.matching import match_profile_to_job
 
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 def simulate_opportunity(
     profile: ProfileExtractionResult, 
@@ -56,7 +56,7 @@ def simulate_opportunity(
     
     # 4. Generate LLM motivation
     try:
-        llm = ChatOpenAI(model="gpt-4o", temperature=0)
+        llm = ChatGoogleGenerativeAI(model="gemini-3.6-flash", temperature=0)
         prompt = ChatPromptTemplate.from_messages([
             ("system", "You are a highly motivating career coach. If the student learns {skills}, their match for the job jumps from {old_score}% to {new_score}%. Write exactly one punchy, highly encouraging sentence to motivate them to start learning these skills immediately.")
         ])

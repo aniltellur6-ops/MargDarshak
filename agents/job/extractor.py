@@ -4,7 +4,7 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../backend'))
 
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
@@ -17,7 +17,7 @@ class JobExtractionResult(BaseModel):
     nice_to_have_skills: List[str] = Field(description="List of skills stated as preferred, a plus, or nice to have")
 
 def extract_job(raw_text: str) -> JobExtractionResult:
-    llm = ChatOpenAI(model="gpt-4o", temperature=0)
+    llm = ChatGoogleGenerativeAI(model="gemini-3.6-flash", temperature=0)
     
     prompt = ChatPromptTemplate.from_messages([
         ("system", "You are an expert HR and Career Agent. Your goal is to extract a structured Job Description from raw text.\n"

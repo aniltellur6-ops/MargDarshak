@@ -20,7 +20,7 @@ services:
       - margdarshak_network
 
   neo4j:
-    image: neo4j:5.14.1
+    image: neo4j:5
     container_name: margdarshak_neo4j
     ports:
       - "7474:7474" # HTTP UI

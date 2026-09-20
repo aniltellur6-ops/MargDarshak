@@ -5,7 +5,7 @@ import os
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../../'))
 from agents.profile.extractor import ProfileExtractionResult
-from app.schemas.job import JobCreate
+from agents.job.extractor import JobExtractionResult
 from app.ontology.skill_graph import SkillGraphManager
 
 class SkillMatchDetail(BaseModel):
@@ -20,7 +20,7 @@ class MatchResult(BaseModel):
     overall_match_percentage: float
     details: List[SkillMatchDetail]
 
-def match_profile_to_job(profile: ProfileExtractionResult, job: JobCreate) -> MatchResult:
+def match_profile_to_job(profile: ProfileExtractionResult, job: JobExtractionResult) -> MatchResult:
     manager = SkillGraphManager()
     
     # Normalize student profile skills
@@ -39,9 +39,36 @@ def match_profile_to_job(profile: ProfileExtractionResult, job: JobCreate) -> Ma
     total_possible_weight = 0.0
     total_earned_weight = 0.0
     
-    for req in job.requirements:
-        req_id = req.skill_id
-        weight = req.importance_score
+    # Process Must Have Skills
+    for skill_name in job.must_have_skills:
+        req_id = manager.normalize_skill(skill_name) or skill_name.upper().replace(' ', '_')
+        weight = 1.0
+        total_possible_weight += weight
+        
+        best_score = 0.0
+        best_match_id = "NONE"
+        
+        for student_skill in student_canonical_skills:
+            score = manager.calculate_similarity(req_id, student_skill)
+            if score > best_score:
+                best_score = score
+                best_match_id = student_skill
+                
+        earned = best_score * weight
+        total_earned_weight += earned
+        
+        match_details.append(SkillMatchDetail(
+            requirement_skill_id=req_id,
+            best_match_skill_id=best_match_id,
+            similarity_score=best_score,
+            importance_weight=weight,
+            weighted_score=earned
+        ))
+
+    # Process Nice To Have Skills
+    for skill_name in job.nice_to_have_skills:
+        req_id = manager.normalize_skill(skill_name) or skill_name.upper().replace(' ', '_')
+        weight = 0.5
         total_possible_weight += weight
         
         best_score = 0.0
@@ -69,7 +96,7 @@ def match_profile_to_job(profile: ProfileExtractionResult, job: JobCreate) -> Ma
     percentage = (total_earned_weight / total_possible_weight) * 100 if total_possible_weight > 0 else 0.0
     
     return MatchResult(
-        job_id=job.job_id,
+        job_id=job.title,
         overall_match_percentage=round(percentage, 2),
         details=match_details
     )

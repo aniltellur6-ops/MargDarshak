@@ -7,7 +7,7 @@ from backend.app.services.job_service import parse_and_normalize_job
 
 load_dotenv()
 
-dummy_jd = \"\"\"
+dummy_jd = """
 We are looking for a Backend Engineer to join our team at TechCorp.
 Location: Remote
 
@@ -23,7 +23,7 @@ Required Skills:
 Nice to have:
 - Experience with docker and containerization
 - React.js frontend knowledge
-\"\"\"
+"""
 
 def run_test():
     if not os.getenv("OPENAI_API_KEY"):

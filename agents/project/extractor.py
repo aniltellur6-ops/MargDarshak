@@ -6,7 +6,7 @@ from app.schemas.project import ProjectCreate
 from app.ontology.skill_graph import SkillGraphManager
 
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from pydantic import BaseModel, Field
 from typing import List
 import uuid
@@ -18,7 +18,7 @@ class ProjectExtractionSchema(BaseModel):
     raw_skills: List[str] = Field(description="List of skills, tools, frameworks, or concepts proven by building this project")
 
 def extract_project(raw_text: str) -> ProjectCreate:
-    llm = ChatOpenAI(model="gpt-4o", temperature=0)
+    llm = ChatGoogleGenerativeAI(model="gemini-3.6-flash", temperature=0)
     structured_llm = llm.with_structured_output(ProjectExtractionSchema)
     
     prompt = ChatPromptTemplate.from_messages([

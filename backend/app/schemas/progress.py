@@ -16,8 +16,8 @@ class Progress(ProgressBase):
     class Config:
         from_attributes = True
 
-from .profile import ProfileExtractionResult
-from .matching import MatchResult
+from agents.profile.extractor import ProfileExtractionResult
+from app.engine.matching import MatchResult
 
 class ProgressUpdateReport(BaseModel):
     updated_profile: ProfileExtractionResult

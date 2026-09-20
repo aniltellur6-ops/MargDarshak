@@ -7,7 +7,14 @@ class SkillGraphManager:
         uri = uri or os.getenv("NEO4J_URI", "bolt://localhost:7687")
         user = user or os.getenv("NEO4J_USER", "neo4j")
         password = password or os.getenv("NEO4J_PASSWORD", "margdarshak_secret")
-        self.driver = GraphDatabase.driver(uri, auth=(user, password))
+        self.is_connected = False
+        try:
+            self.driver = GraphDatabase.driver(uri, auth=(user, password), connection_timeout=2.0)
+            self.driver.verify_connectivity()
+            self.is_connected = True
+        except Exception:
+            print("Warning: Could not connect to Neo4j. Operating in fallback mode.")
+            self.driver = None
 
     def save_profile(self, profile_id: str, profile):
         # We assume profile is a ProfileExtractionResult
@@ -73,7 +80,8 @@ class SkillGraphManager:
                 )
 
     def close(self):
-        self.driver.close()
+        if self.is_connected and self.driver:
+            self.driver.close()
 
     def add_skill(self, skill_id: str, name: str, category: str):
         query = (
@@ -119,16 +127,22 @@ class SkillGraphManager:
             session.run(query, source_id=source_id, target_id=target_id)
 
     def normalize_skill(self, raw_skill_name: str) -> Optional[str]:
+        if not self.is_connected:
+            return raw_skill_name.upper().replace(' ', '_')
+            
         query = (
-            "MATCH (a:Alias {name: })-[:MAPS_TO]->(s:Skill) "
+            "MATCH (a:Alias {name: $alias_name})-[:MAPS_TO]->(s:Skill) "
             "RETURN s.skill_id AS skill_id LIMIT 1"
         )
-        with self.driver.session() as session:
-            result = session.run(query, alias_name=raw_skill_name.lower())
-            record = result.single()
-            if record:
-                return record["skill_id"]
-        return None
+        try:
+            with self.driver.session() as session:
+                result = session.run(query, alias_name=raw_skill_name.lower())
+                record = result.single()
+                if record:
+                    return record["skill_id"]
+        except Exception:
+            pass
+        return raw_skill_name.upper().replace(' ', '_')
 
 
     def calculate_similarity(self, skill_a_id: str, skill_b_id: str) -> float:
@@ -141,42 +155,56 @@ class SkillGraphManager:
         if skill_a == skill_b:
             return 1.0
             
+        if not self.is_connected:
+            return 0.5 if (skill_a in skill_b or skill_b in skill_a) else 0.0
+            
         query = (
-            "MATCH (a:Skill {skill_id: }), (b:Skill {skill_id: }) "
+            "MATCH (a:Skill {skill_id: $skill_a}), (b:Skill {skill_id: $skill_b}) "
             "OPTIONAL MATCH (a)-[p:PARENT_OF]-(b) "
             "OPTIONAL MATCH (a)-[r:RELATED_TO|REQUIRES]-(b) "
             "RETURN p, r"
         )
-        with self.driver.session() as session:
-            result = session.run(query, skill_a=skill_a, skill_b=skill_b)
-            record = result.single()
-            if record:
-                if record["p"] is not None:
-                    return 0.8
-                if record["r"] is not None:
-                    return 0.5
+        try:
+            with self.driver.session() as session:
+                result = session.run(query, skill_a=skill_a, skill_b=skill_b)
+                record = result.single()
+                if record:
+                    if record["p"] is not None:
+                        return 0.8
+                    if record["r"] is not None:
+                        return 0.5
+        except Exception:
+            pass
         return 0.0
 
 
     def get_skill_dependency_weight(self, skill_id: str) -> int:
-        if not skill_id:
+        if not skill_id or not self.is_connected:
             return 0
             
         # Count how many other skills have a REQUIRES or PARENT_OF pointing to this skill
         query = (
-            "MATCH (other:Skill)-[:REQUIRES|PARENT_OF]->(target:Skill {skill_id: }) "
+            "MATCH (other:Skill)-[:REQUIRES|PARENT_OF]->(target:Skill {skill_id: $skill_id}) "
             "RETURN count(other) AS dep_count"
         )
-        with self.driver.session() as session:
-            result = session.run(query, skill_id=skill_id.upper())
-            record = result.single()
-            if record:
-                return record["dep_count"]
+        try:
+            with self.driver.session() as session:
+                result = session.run(query, skill_id=skill_id.upper())
+                record = result.single()
+                if record:
+                    return record["dep_count"]
+        except Exception:
+            pass
         return 0
 
     def clear_database(self):
+        if not self.is_connected:
+            return
         query = "MATCH (n) DETACH DELETE n"
-        with self.driver.session() as session:
-            session.run(query)
+        try:
+            with self.driver.session() as session:
+                session.run(query)
+        except Exception:
+            pass
 
 

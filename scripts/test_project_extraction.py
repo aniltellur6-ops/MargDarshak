@@ -8,11 +8,11 @@ from agents.project.extractor import extract_project
 load_dotenv()
 
 def run_test():
-    raw_project_text = \"\"\"
+    raw_project_text = """
     I built a highly scalable microservices architecture for an e-commerce platform.
     The main backend is written in Python using FastAPI. For the database, I used Postgres.
     Everything is containerized and deployed using K8s on AWS.
-    \"\"\"
+    """
     
     print("Running Project Intelligence Extraction...")
     project = extract_project(raw_project_text)

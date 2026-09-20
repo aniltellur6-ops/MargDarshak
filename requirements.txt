@@ -9,12 +9,11 @@ neo4j==5.14.1
 
 # AI Agents & LangGraph
 langchain==0.1.0
-langchain-openai==0.0.2
+langchain-google-genai
 langgraph==0.0.10
-openai==1.6.0
 
 # Environment Management
 python-dotenv==1.0.0
 
 # Model Context Protocol
-mcp==1.0.0
+mcp

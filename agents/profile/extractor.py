@@ -5,7 +5,7 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../backend'))
 
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from app.schemas.profile import StudentProfileCreate, SkillEvidence
 from pydantic import BaseModel, Field
 from typing import List, Optional
@@ -21,8 +21,8 @@ class ProfileExtractionResult(BaseModel):
     evidences: List[SkillEvidence] = Field(description="List of skills along with their concrete evidence.")
 
 def extract_profile(raw_text: str) -> ProfileExtractionResult:
-    # We use OpenAI by default. Ensure OPENAI_API_KEY is in environment.
-    llm = ChatOpenAI(model="gpt-4o", temperature=0)
+    # We use Gemini by default. Ensure GOOGLE_API_KEY is in environment.
+    llm = ChatGoogleGenerativeAI(model="gemini-3.6-flash", temperature=0)
     
     prompt = ChatPromptTemplate.from_messages([
         ("system", "You are an expert Career Profile Intelligence Agent. Your goal is to extract a highly structured profile from a student's resume or free-text description.\n"

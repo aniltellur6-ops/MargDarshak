@@ -8,7 +8,7 @@ from app.api.errors import global_exception_handler
 # Import Routers
 from app.api.profile import router as profile_router
 from app.api.job import router as job_router
-from app.api.match import router as match_router
+from app.api.matching import router as match_router
 from app.api.gap import router as gap_router
 from app.api.priority import router as priority_router
 from app.api.opportunity import router as opportunity_router
@@ -57,3 +57,19 @@ app.include_router(assessment_router, prefix="/api/assessment", tags=["assessmen
 app.include_router(progress_router, prefix="/api/progress", tags=["progress"])
 app.include_router(news_router, prefix="/api/news", tags=["news"])
 app.include_router(orchestrator_router, prefix="/api/orchestrator", tags=["orchestrator"])
+
+import os
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+frontend_dist = os.path.join(os.path.dirname(__file__), "../../webapp/dist")
+
+if os.path.exists(os.path.join(frontend_dist, "assets")):
+    app.mount("/assets", StaticFiles(directory=os.path.join(frontend_dist, "assets")), name="assets")
+
+@app.get("/{catchall:path}")
+async def serve_spa(catchall: str):
+    # Only serve index.html if the file exists and the request isn't for an API route
+    if not catchall.startswith("api/") and os.path.exists(os.path.join(frontend_dist, "index.html")):
+        return FileResponse(os.path.join(frontend_dist, "index.html"))
+    return {"detail": "Not Found"}

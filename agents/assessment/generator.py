@@ -5,10 +5,10 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../../backend'))
 from app.schemas.assessment import AssessmentQuiz, QuizQuestion
 
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 def generate_assessment(skill_id: str, difficulty: str = "Intermediate") -> AssessmentQuiz:
-    llm = ChatOpenAI(model="gpt-4o", temperature=0.2)
+    llm = ChatGoogleGenerativeAI(model="gemini-3.6-flash", temperature=0.2)
     structured_llm = llm.with_structured_output(AssessmentQuiz)
     
     prompt = ChatPromptTemplate.from_messages([

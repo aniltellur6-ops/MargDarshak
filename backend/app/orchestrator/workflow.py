@@ -18,10 +18,12 @@ def node_extract_job(state: MargDarshakState) -> MargDarshakState:
     job = extract_job(state["raw_job_text"])
     return {"job": job}
 
-def node_analyze_gaps(state: MargDarshakState) -> MargDarshakState:
-    gaps = analyze_gaps(state["profile"], state["job"])
-    return {"gaps": gaps}
+from app.engine.matching import match_profile_to_job
 
+def node_analyze_gaps(state: MargDarshakState) -> MargDarshakState:
+    match_result = match_profile_to_job(state["profile"], state["job"])
+    gaps = analyze_gaps(match_result)
+    return {"gaps": gaps}
 def node_prioritize_gaps(state: MargDarshakState) -> MargDarshakState:
     priorities = prioritize_gaps(state["gaps"])
     return {"priorities": priorities}

@@ -5,7 +5,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../../backend'))
 from app.engine.matching import MatchResult
 from app.schemas.gap import GapReport, MissingSkill
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 def analyze_gaps(match_result: MatchResult) -> GapReport:
     # 1. Deterministic Gap Filtering
@@ -26,7 +26,7 @@ def analyze_gaps(match_result: MatchResult) -> GapReport:
         summary_text = "You are a perfect match for this role. No critical skill gaps identified."
     else:
         try:
-            llm = ChatOpenAI(model="gpt-4o", temperature=0)
+            llm = ChatGoogleGenerativeAI(model="gemini-3.6-flash", temperature=0)
             prompt = ChatPromptTemplate.from_messages([
                 ("system", "You are a career advisor. The user has matched {match_score}% with a job, but they are missing the following skills: {skills}. Write exactly two sentences summarizing their skill gap and advising them on what to focus on."),
             ])

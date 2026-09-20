@@ -1,8 +1,8 @@
 from typing import TypedDict, Optional, List
-from app.schemas.profile import ProfileExtractionResult
+from agents.profile.extractor import ProfileExtractionResult
 from app.schemas.job import JobCreate
-from app.schemas.gap import GapAnalysisResult
-from app.schemas.priority import PriorityScore
+from app.schemas.gap import GapReport
+from app.schemas.priority import PrioritizedSkill
 
 class MargDarshakState(TypedDict):
     raw_profile_text: str
@@ -10,5 +10,5 @@ class MargDarshakState(TypedDict):
     
     profile: Optional[ProfileExtractionResult]
     job: Optional[JobCreate]
-    gaps: Optional[GapAnalysisResult]
-    priorities: Optional[List[PriorityScore]]
+    gaps: Optional[GapReport]
+    priorities: Optional[List[PrioritizedSkill]]
