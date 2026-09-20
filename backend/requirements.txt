@@ -13,8 +13,8 @@ langchain-google-genai==1.0.8
 # Workflow
 langgraph==0.1.4
 
-# Document Parsing
-PyMuPDF==1.24.6
+# Document Parsing (pure Python - no system deps)
+pypdf==4.3.1
 python-docx==1.1.2
 
 # Graph Database

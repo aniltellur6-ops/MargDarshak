@@ -1,14 +1,15 @@
 import io
-import fitz  # PyMuPDF
+from pypdf import PdfReader
 from docx import Document
 
 def parse_pdf(file_bytes: bytes) -> str:
     text = ""
     try:
-        pdf_document = fitz.open(stream=file_bytes, filetype="pdf")
-        for page_num in range(pdf_document.page_count):
-            page = pdf_document.load_page(page_num)
-            text += page.get_text("text") + "\n"
+        reader = PdfReader(io.BytesIO(file_bytes))
+        for page in reader.pages:
+            extracted = page.extract_text()
+            if extracted:
+                text += extracted + "\n"
     except Exception as e:
         raise ValueError(f"Failed to parse PDF: {str(e)}")
     return text
